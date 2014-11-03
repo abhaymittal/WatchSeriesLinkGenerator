@@ -6,10 +6,26 @@
 
 #Author: Abhay Mittal
 
-tv_show_name=$1
-season_no=$2
-ep_init=$3
-ep_final=$4
-vid_site=$5
+tvShowName=$1
+seasonNo=$2
+epInit=$3
+epFinal=$4
+vidSite=$5
 
-base_url="http://watchseries.ag/episode/_s$season_no_e";
+echo "The input parameters are: "
+echo "TV Show Name = $tvShowName"
+echo "Season Number = $seasonNo"
+echo "Initial episode = $epInit"
+echo "Final episode = $epFinal"
+echo "Video site = $vidSite"
+
+baseUrl=$(echo "http://watchseries.ag/episode/${tvShowName}_s${seasonNo}_e");
+
+for ((ep=epInit; ep <= epFinal ; ep++))
+do
+    pageUrl=$(echo "$baseUrl$ep.html")
+    pageSource=$(curl "$pageUrl")
+    linkTable=$(echo "$pageSource" | xmllint --html --xpath '//div[@id="lang_1"]/div[@class="linktable"]/table/tbody/tr' - 2> /dev/null)
+    echo "$linkTable"
+done
+
