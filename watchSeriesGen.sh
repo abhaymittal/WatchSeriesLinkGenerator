@@ -23,9 +23,13 @@ baseUrl=$(echo "http://watchseries.ag/episode/${tvShowName}_s${seasonNo}_e");
 
 for ((ep=epInit; ep <= epFinal ; ep++))
 do
+    #Grab the link of the secondary page
     pageUrl=$(echo "$baseUrl$ep.html")
     pageSource=$(curl "$pageUrl")
     linkTable=$(echo "$pageSource" | xmllint --html --xpath '//div[@id="lang_1"]/div[@class="linktable"]/table/tbody/tr' - 2> /dev/null)
-    echo "$linkTable"
+    linkPage=$(echo "$linkTable" | xmllint --html --xpath "string(//a[@title=\"$vidSite\" and @class=\"buttonlink\"]/@href)" - 2> /dev/null)
+    linkPage=$(echo "http://watchseries.ag$linkPage")
+
+    #Now grab the vidSite link from the link page
 done
 
